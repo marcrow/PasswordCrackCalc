@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # This script is used to calculate how many characters are used in a password.
 # It is used to calculate the complexity of a password.
 

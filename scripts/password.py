@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# A password lenght, a bruteforce rate ? This script will tell you how long it will take to crack it
+# As this script is cool, it will adapt the scale to the time it will take to crack the password (from second to century)
+
 import numpy as np
 import matplotlib.pyplot as plt
 

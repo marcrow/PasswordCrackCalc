@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# This script is used to calculate the optimal transition from token generation to brute force
+# It is focused on the reset token time limit
 import numpy as np
 import matplotlib.pyplot as plt
 
