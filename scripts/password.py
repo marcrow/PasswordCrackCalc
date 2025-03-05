@@ -1,51 +1,53 @@
 #!/usr/bin/env python
-# A password lenght, a bruteforce rate ? This script will tell you how long it will take to crack it
-# As this script is cool, it will adapt the scale to the time it will take to crack the password (from second to century)
-
 import numpy as np
 import matplotlib.pyplot as plt
 
+# === User Parameters ===
+code_length = 4            # Number of digits in the code
+character_set_size = 10     # Size of the character set (0-9 for a 4-digit code)
+attempts_per_second = 1/3   # One attempt every 3 seconds
+mode = "probabilistic"      # Choose "deterministic" or "probabilistic"
 
-# User variables
-password_size = 8
-char_set_size = 62  # 26 letters (lower) + 26 letters (upper) + 10 digits
-tests_per_second_single = 1000000000  # 1M tests/sec
+# === Computed Variables ===
+total_combinations = character_set_size ** code_length  # Total number of possible codes
+max_time_seconds = total_combinations / attempts_per_second  # Max time to test all combinations
 
+# === Time Scale Definitions ===
+time_scales = [
+    {"unit": "Second", "factor": 1, "limit": 60},
+    {"unit": "Minute", "factor": 60, "limit": 60},
+    {"unit": "Hour", "factor": 3600, "limit": 24},
+    {"unit": "Day", "factor": 86400, "limit": 7},
+    {"unit": "Week", "factor": 604800, "limit": 4},
+    {"unit": "Month", "factor": 2592000, "limit": 12},
+    {"unit": "Year", "factor": 31536000, "limit": 100},
+]
 
-# Program variables
-complexity = char_set_size**password_size 
-second = {"second": 1, "text": "Second", "next": 60}
-minute = {"second": 60, "text": "Minute", "next": 60}
-hour = {"second": 3600, "text": "Hour", "next": 24}
-day = {"second": 86400, "text": "Day", "next": 7}
-week = {"second": 604800, "text": "Week", "next": 4}
-month = {"second": 2592000, "text": "Month", "next": 12}
-year = {"second": 31536000, "text": "Year", "next": 100}
-century = {"second": 3153600000, "text": "Century"}
-
-scale = [second, minute, hour, day, week, month, year, century]
-
-# Set the scale
-used_scale = century
-for s in scale:
-    proba = float((tests_per_second_single * s["second"] * s["next"]) / complexity)
-    if proba > 0.95:
-        used_scale = s
+# Select the most appropriate time scale
+selected_time_scale = time_scales[-1]  # Default: Century
+for scale in time_scales:
+    if max_time_seconds / scale["factor"] < scale["limit"]:
+        selected_time_scale = scale
         break
 
-# adjust the scale
-time_single_short = np.linspace(0, used_scale["second"] * used_scale["next"], 1000)
-probabilities = 1 - np.exp(-tests_per_second_single * time_single_short / complexity)
+# === Probability Calculation ===
+time_intervals = np.linspace(0, max_time_seconds, 1000)  # Time range
 
-# Create the plot
+if mode == "probabilistic":
+    success_probabilities = 1 - np.exp(-attempts_per_second * time_intervals / total_combinations)  # Exponential model
+elif mode == "deterministic":
+    success_probabilities = time_intervals / max_time_seconds  # Linear model
+    success_probabilities[success_probabilities > 1] = 1  # Cap at 100%
+
+# === Plot the Graph ===
 plt.figure(figsize=(10, 6))
-plt.plot(time_single_short / used_scale["second"], probabilities, label='Success Probability')
+plt.plot(time_intervals / selected_time_scale["factor"], success_probabilities, label=f'Success Probability ({mode.capitalize()})')
 
-plt.xlabel(f'Time ({used_scale["text"]})')
+plt.xlabel(f'Time ({selected_time_scale["unit"]})')
 plt.ylabel('Success Probability')
 plt.title('Success Probability for Brute Force Attack based on Time')
 plt.grid(True)
-plt.xlim(0, used_scale["next"])
+plt.xlim(0, max_time_seconds / selected_time_scale["factor"])
 plt.ylim(0, 1)
 plt.legend()
 plt.show()
