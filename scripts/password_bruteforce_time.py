@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 
 # === User Parameters ===
 code_length = 4            # Number of digits in the code
-character_set_size = 10     # Size of the character set (0-9 for a 4-digit code)
-attempts_per_second = 1/3   # One attempt every 3 seconds
-mode = "probabilistic"      # Choose "deterministic" or "probabilistic"
+character_set_size = 10    # Size of the character set (0-9 for a 4-digit code)
+attempts_per_second = 1   # One attempt every 3 seconds
+mode = "deterministic"      # Choose "deterministic" or "probabilistic"
 
 # === Computed Variables ===
 total_combinations = character_set_size ** code_length  # Total number of possible codes
@@ -45,7 +45,7 @@ plt.plot(time_intervals / selected_time_scale["factor"], success_probabilities, 
 
 plt.xlabel(f'Time ({selected_time_scale["unit"]})')
 plt.ylabel('Success Probability')
-plt.title('Success Probability for Brute Force Attack based on Time')
+plt.title(f'Success Probability for Brute Force Attack based on Time - {mode.capitalize()}')
 plt.grid(True)
 plt.xlim(0, max_time_seconds / selected_time_scale["factor"])
 plt.ylim(0, 1)

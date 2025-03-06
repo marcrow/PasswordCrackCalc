@@ -5,12 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # User variables
-T_total = 60 * 2  # Lifetime of the token in seconds
-R_gen = 100  # Token generation rate (nb token per second)
-r = 200  # Brute-force rate (nb attempts per second)
-password_size = 6
-char_set_size = 36  # 26 letters (lower) + 10 digits
-max_tokens = 1000  # Maximum number of tokens generated. Comment this line to disable the limit
+T_total = 60 * 60  # Lifetime of the token in seconds
+R_gen = 1  # Token generation rate (nb token per second)
+r = 1/10  # Brute-force rate (nb attempts per second)
+password_size = 4
+char_set_size = 10  # 26 letters (lower) + 10 digits
+max_tokens = 1000000  # Maximum number of tokens generated. Comment this line to disable the limit
 
 # Program variables
 N = char_set_size**password_size  
